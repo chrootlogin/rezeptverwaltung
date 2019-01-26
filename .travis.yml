@@ -1,0 +1,19 @@
+jobs:
+  include:
+    - language: java
+      jdk: openjdk11
+
+      git:
+        depth: false
+
+      cache:
+        directories:
+          - '$HOME/.m2/repository'
+          - '$HOME/.sonar/cache'
+
+      script:
+        - mvn clean package
+
+notifications:
+  email:
+  - hello@rootlogin.ch
