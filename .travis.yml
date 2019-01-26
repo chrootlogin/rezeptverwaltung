@@ -1,3 +1,8 @@
+env:
+  global:
+    - BINTRAY_USER=rootlogin
+    - secure: "i2TooRNggdvBl3WfeKq62nVHvsoHrbF0jZYXHebRKBW67JItCFc28efTuTYA14gnOk1fcN+gurp5MsB4zYePakmWbU7Eha5PaKBgjoGDc50LlAsmouVfRoU4Ld8VffB5FVo+Gv+du7w+hfJ8MAo4t2Qyomcf8+Plb22HnULYhnvymJ1c+uCYpbkgwBupaEkdGpINbZRVJuAi45Db9bcAUHQWDN5HFbVsdgVtSsePK9pHu7HaQQLQSHrjKLRm6jfn0PV+oBA4bMmf3vbQ+i9cWYGPBuJY0BRF23DBpxDgeSUt3Be7PqcJ1FtAltS6QJNKAk572J0ZDF7k+YF1ieJ+viwSgJjb9SCkPvte8Dylg1Jlufo/h81CzOs1JGd+LUov9QIEuJYKLuHP7TV1gVXWCuCaT5PekVblafm289gNsRaXurLRF67k8vKOlDJMYHy2IrEMPIj5wmqOG0lHPQeWN/rXFgGMYjGdAhlZrhskNc2v7SiIPtkp8e8Qh1rAgvzkGbU4BEWRvIkGYIN9DqGvxwSs5Ly+JkpDe9r4QXGDO03asa5CyDCxc7ZA3kGiwIHa3Q5QHBpaCv5JXvIn7ofJeHPyPvnr6dx3mHOGsy0lU9M4noiEB2AQe9Pd7Zqu1N04Qr4VtX0D6r9FYYNV8a6vMmi7Nk3T1FPzhqfy0edUqvI="
+
 jobs:
   include:
     - language: java
@@ -14,7 +19,15 @@ jobs:
       script:
         - mvn clean package
 
-#deploy:
+deploy:
+  - provider: script
+    script: |
+      curl -T "target/rezeptverwaltung-*.jar" -u "$BINTRAY_USER:$BINTRAY_API_KEY" -H "X-Bintray-Publish:1" -H "X-Bintray-Package:linux" -H "X-Bintray-Version:latest-$(date +%Y-%m-%d)" -H "X-Bintray-Override:1" "https://api.bintray.com/content/rootlogin/rezeptverwaltung/latest-$(date +%Y-%m-%d)/rezeptverwaltung.jar"
+      curl -T "target/rezeptverwaltung-*.exe" -u "$BINTRAY_USER:$BINTRAY_API_KEY" -H "X-Bintray-Publish:1" -H "X-Bintray-Package:windows" -H "X-Bintray-Version:latest-$(date +%Y-%m-%d)" -H "X-Bintray-Override:1" "https://api.bintray.com/content/rootlogin/rezeptverwaltung/latest-$(date +%Y-%m-%d)/rezeptverwaltung.exe"
+    skip_cleanup: true
+    on:
+      branch: master
+
 #  provider: bintray
 #  user: "rootlogin"
 #  key:
