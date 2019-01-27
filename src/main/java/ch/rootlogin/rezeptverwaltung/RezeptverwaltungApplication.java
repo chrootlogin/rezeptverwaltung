@@ -20,7 +20,6 @@ import ch.rootlogin.rezeptverwaltung.gui.notification.PreloaderStatusNotificatio
 import ch.rootlogin.rezeptverwaltung.helper.Helper;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -43,13 +42,9 @@ public class RezeptverwaltungApplication extends Application {
 		notifyPreloader(new PreloaderStatusNotification("Initializing spring application..."));
 		context = SpringApplication.run(RezeptverwaltungApplication.class);
 
-		// Init database
-		//notifyPreloader(new PreloaderStatusNotification("Initializing database..."));
-		//Database.getInstance().init();
-
 		// Init main view
 		notifyPreloader(new PreloaderStatusNotification("Loading main view..."));
-		rootNode = loadParent("/views/main.fxml");
+		rootNode = Helper.loadFXParent("/views/main.fxml");
 
 		// Starting application
 		notifyPreloader(new PreloaderStatusNotification("Starting application..."));
@@ -79,15 +74,6 @@ public class RezeptverwaltungApplication extends Application {
 	@Override
 	public void stop() throws Exception {
 		context.close();
-	}
-
-	private Parent loadParent(String path) throws IOException {
-		var fxmlLoader = new FXMLLoader();
-		fxmlLoader.setControllerFactory(context::getBean);
-
-		return (Parent) fxmlLoader.load(
-				Helper.getInputStream(path)
-		);
 	}
 
 	public static void main(String[] args) {

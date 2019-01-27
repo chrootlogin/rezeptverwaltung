@@ -15,6 +15,10 @@
  */
 package ch.rootlogin.rezeptverwaltung.helper;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
@@ -39,5 +43,16 @@ public class Helper {
         }
 
         return null;
+    }
+
+    public static Parent loadFXParent(String path) throws IOException {
+        var context = ApplicationContextProvider.getApplicationContext();
+
+        var fxmlLoader = new FXMLLoader();
+        fxmlLoader.setControllerFactory(context::getBean);
+
+        return (Parent) fxmlLoader.load(
+                Helper.getInputStream(path)
+        );
     }
 }
