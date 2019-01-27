@@ -29,6 +29,9 @@
         <Menu text="Kategorie">
             <MenuItem onAction="#handleCreateCategoryAction" text="Erstellen" />
         </Menu>
+        <Menu text="Rezept">
+            <MenuItem onAction="#handleCreateReceiptAction" text="Erstellen" />
+        </Menu>
         <Menu text="Über">
             <MenuItem onAction="#handleAboutAction" text="Rezeptverwaltung" />
         </Menu>

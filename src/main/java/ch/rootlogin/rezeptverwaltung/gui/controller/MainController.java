@@ -15,6 +15,7 @@
  */
 package ch.rootlogin.rezeptverwaltung.gui.controller;
 
+import ch.rootlogin.rezeptverwaltung.helper.Helper;
 import ch.rootlogin.rezeptverwaltung.model.Category;
 import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
@@ -23,12 +24,15 @@ import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -74,6 +78,17 @@ public class MainController {
     }
 
     @FXML
+    public void handleCreateReceiptAction(ActionEvent event) {
+        try {
+            var stage = new Stage();
+            var addReceiptView = Helper.loadFXParent("/views/addReceipt.fxml");
+
+            stage.setScene(new Scene(addReceiptView));
+            stage.show();
+        } catch(IOException ex) {}
+    }
+
+    @FXML
     public void handleCloseAction(ActionEvent event) {
         Platform.exit();
     }
@@ -83,13 +98,7 @@ public class MainController {
             var cat = new Category(name);
             categoryRepository.save(cat);
 
-
-            var receipt = new Receipt("Testrezept", "bla 1234");
-            receipt.setCategory(cat);
-
-            receiptRepository.save(receipt);
-
-
+            // re-render category list
             renderAccordion();
         }
     }

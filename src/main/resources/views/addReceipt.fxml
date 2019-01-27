@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Button?>
+<GridPane style="-fx-padding: 10px" hgap="10" prefHeight="600" prefWidth="500" vgap="10" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.rootlogin.rezeptverwaltung.gui.controller.AddReceiptController">
+
+    <columnConstraints>
+        <ColumnConstraints prefWidth="100" />
+        <ColumnConstraints hgrow="SOMETIMES" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints vgrow="ALWAYS" />
+        <RowConstraints />
+    </rowConstraints>
+
+    <Text style="-fx-font-size: 24px" text="Rezept hinzufügen" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+
+    <Text text="Kategorie" GridPane.rowIndex="1" GridPane.columnIndex="0"  />
+    <ComboBox GridPane.rowIndex="1" GridPane.columnIndex="1" />
+    <Text text="Titel" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+    <TextField GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+    <Text text="Inhalt" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+    <TextArea GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
+
+    <Button text="Speichern" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+</GridPane>
