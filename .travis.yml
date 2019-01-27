@@ -26,13 +26,6 @@ deploy:
     on:
       branch: master
 
-#  provider: bintray
-#  user: "rootlogin"
-#  key:
-#    secure: "gC6qdtBOqz1GikkloBhe/p9aCzdA0ozx22UMR7HaglqgWn2nkAQO5XdAWOptOFa775+B2IgRUMJFMF0yonEcQtx5cCrII5rzuejDLfaYiVEz6MbYYhD4Z0QJ3Bj7iUABUGBrVWTnsTSnC8zB3J1taorVCS2juaVTrM8q5lF9Z0eOegnc40q0uU9NY6PfwoGNwuukG11mhoDvHS4xrWxthRO+xoYoHcR5BYrZ/u2JakcmFrInTf/hz50WnltPBTIXMytqItjU+KDXrv7/HP3R+rSxf9zGC1/nIKOGaWGhNE8n0K/vL9TEoNEWP7unuh+v86XZlcV/sqdL7f84+mx7ChuuFIw1MkHUC00FtAkaAcjL6wtPnyvNySi4215KH7vC3KF2iIX4JG1YHhnEDgn9e8pN/9UHvQY62qhpUd5mqQ2QP8NBBeUQflFWpNXhbLi++HqFrRiON+PB6OQ/sig5SoRytcbMhYeoVs+v4Yo4l7R1mRn0cS6PlDE3W15vwrI3A3ryaX6qx6Ecl7uURRA2Ss3G/XqN5Vv9umqB50lp9nCXIjq9JPoJi8ofQTdekCmIwmjCtd1CS/fJ6zA9GZVQucpTgzsXJdcg1RwhdVHOgUSVdmpwguvaFZm+A64jxRtx+axB4dUU5TnhyuFgZk7apVOQmV0HjPcP05I/tBmVE3I="
-#  on:
-#    all_branches: true
-
 notifications:
   email:
   - hello@rootlogin.ch
