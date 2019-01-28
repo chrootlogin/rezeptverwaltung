@@ -20,7 +20,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<java.version>11</java.version>
-		<openjfx.version>11</openjfx.version>
+		<openjfx.version>11.0.2</openjfx.version>
 		<flexmark.version>0.40.16</flexmark.version>
 	</properties>
 
@@ -42,6 +42,11 @@
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
+			<version>${openjfx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-web</artifactId>
 			<version>${openjfx.version}</version>
 		</dependency>
 		<dependency>

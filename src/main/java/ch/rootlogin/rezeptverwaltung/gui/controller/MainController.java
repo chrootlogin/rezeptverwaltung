@@ -23,6 +23,8 @@ import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
 import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,11 +34,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,7 +51,7 @@ import java.util.logging.Logger;
 
 @Component
 public class MainController {
-    private final static Logger logger = Logger.getLogger(Helper.class.getName());
+    private final static Logger logger = Logger.getLogger(MainController.class.getName());
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -60,6 +64,9 @@ public class MainController {
 
     @FXML
     private Accordion categoryAccordion;
+
+    @FXML
+    private TabPane tabReceipts;
 
     @FXML
     public void initialize() {
@@ -136,18 +143,24 @@ public class MainController {
         while(categories.hasNext()) {
             var category = categories.next();
 
+            // Create receipt links
             var receiptList = new VBox();
             for (Receipt receipt : category.getReceipts()) {
                 var receiptLink = new Hyperlink();
                 receiptLink.setText(receipt.getTitle());
+                receiptLink.setOnMouseClicked((event) -> {
+                    createReceiptTab(receipt.getId());
+                });
 
                 receiptList.getChildren().add(receiptLink);
             }
 
+            // Create pane for showing receipts
             var titledPane = new TitledPane();
             titledPane.setText(category.getName());
             titledPane.setContent(receiptList);
 
+            // add to pane list
             categoryPanes.add(titledPane);
 
             i++;
@@ -160,5 +173,35 @@ public class MainController {
         if(i > 0) {
             categoryAccordion.setExpandedPane(categoryPanes.get(0));
         }
+    }
+
+    private void createReceiptTab(Long receiptId) {
+        var parser = Parser.builder().build();
+        var renderer = HtmlRenderer.builder().build();
+        var receipt = receiptRepository.findById(receiptId);
+        if(receipt.isEmpty()) {
+            // this should never happen!
+            logger.warning("Got unknown receipt id!");
+            return;
+        }
+
+        // render markdown to html
+        var document = parser.parse(receipt.get().getContent());
+        var html = renderer.render(document);  // "<p>This is <em>Sparta</em></p>\n"
+
+        // create web view and add html
+        var webView = new WebView();
+        webView.getEngine().loadContent(html);
+
+        // create and addtab
+        var receiptTab = new Tab();
+        receiptTab.setClosable(true);
+        receiptTab.setText(receipt.get().getTitle());
+
+        receiptTab.setContent(webView);
+        tabReceipts.getTabs().add(receiptTab);
+
+        // focus tab
+        tabReceipts.getSelectionModel().select(receiptTab);
     }
 }

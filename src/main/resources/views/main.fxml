@@ -39,18 +39,5 @@
 
     <Accordion fx:id="categoryAccordion" GridPane.rowIndex="1" GridPane.columnIndex="0" />
 
-    <TabPane GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS">
-        <tabs>
-            <Tab text="Untitled Tab 1" closable="false">
-                <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0" />
-                </content>
-            </Tab>
-            <Tab text="Untitled Tab 2">
-                <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0" />
-                </content>
-            </Tab>
-        </tabs>
-    </TabPane>
+    <TabPane fx:id="tabReceipts" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" />
 </GridPane>
