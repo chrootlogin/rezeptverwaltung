@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Rezeptverwaltung.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ch.rootlogin.rezeptverwaltung.gui.notification;
+package ch.rootlogin.rezeptverwaltung.notification;
 
 import javafx.application.Preloader.PreloaderNotification;
 

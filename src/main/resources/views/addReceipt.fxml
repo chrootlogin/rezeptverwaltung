@@ -28,12 +28,12 @@
     <Text style="-fx-font-size: 24px" text="Rezept hinzufügen" GridPane.rowIndex="0" GridPane.columnSpan="2" />
 
     <Text text="Kategorie" GridPane.rowIndex="1" GridPane.columnIndex="0"  />
-    <ComboBox GridPane.rowIndex="1" GridPane.columnIndex="1" />
+    <ComboBox fx:id="category" GridPane.rowIndex="1" GridPane.columnIndex="1" />
     <Text text="Titel" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-    <TextField GridPane.rowIndex="2" GridPane.columnIndex="1" />
+    <TextField fx:id="title" GridPane.rowIndex="2" GridPane.columnIndex="1" />
 
     <Text text="Inhalt" GridPane.rowIndex="3" GridPane.columnSpan="2" />
-    <TextArea GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
+    <TextArea fx:id="content" GridPane.rowIndex="4" GridPane.columnSpan="2" GridPane.vgrow="ALWAYS" />
 
-    <Button text="Speichern" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+    <Button text="Speichern" fx:id="btnSave" onAction="#handleSaveAction" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
 </GridPane>

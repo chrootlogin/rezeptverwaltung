@@ -15,8 +15,8 @@
  */
 package ch.rootlogin.rezeptverwaltung;
 
-import ch.rootlogin.rezeptverwaltung.gui.notification.PreloaderCloseNotification;
-import ch.rootlogin.rezeptverwaltung.gui.notification.PreloaderStatusNotification;
+import ch.rootlogin.rezeptverwaltung.notification.PreloaderCloseNotification;
+import ch.rootlogin.rezeptverwaltung.notification.PreloaderStatusNotification;
 import ch.rootlogin.rezeptverwaltung.helper.Helper;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -28,8 +28,6 @@ import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import java.io.IOException;
 
 @SpringBootApplication
 public class RezeptverwaltungApplication extends Application {

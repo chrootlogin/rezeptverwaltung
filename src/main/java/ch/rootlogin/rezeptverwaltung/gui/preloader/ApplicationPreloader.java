@@ -16,8 +16,8 @@
 package ch.rootlogin.rezeptverwaltung.gui.preloader;
 
 import ch.rootlogin.rezeptverwaltung.helper.Helper;
-import ch.rootlogin.rezeptverwaltung.gui.notification.PreloaderCloseNotification;
-import ch.rootlogin.rezeptverwaltung.gui.notification.PreloaderStatusNotification;
+import ch.rootlogin.rezeptverwaltung.notification.PreloaderCloseNotification;
+import ch.rootlogin.rezeptverwaltung.notification.PreloaderStatusNotification;
 
 import javafx.application.Preloader;
 import javafx.scene.Scene;

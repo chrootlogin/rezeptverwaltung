@@ -15,6 +15,8 @@
  */
 package ch.rootlogin.rezeptverwaltung.gui.controller;
 
+import ch.rootlogin.rezeptverwaltung.event.UpdatedReceiptsEvent;
+import ch.rootlogin.rezeptverwaltung.helper.DialogHelper;
 import ch.rootlogin.rezeptverwaltung.helper.Helper;
 import ch.rootlogin.rezeptverwaltung.model.Category;
 import ch.rootlogin.rezeptverwaltung.model.Receipt;
@@ -26,24 +28,32 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Component
 public class MainController {
+    private final static Logger logger = Logger.getLogger(Helper.class.getName());
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    ReceiptRepository receiptRepository;
+    private ReceiptRepository receiptRepository;
 
     @FXML
     private MenuBar mainMenuBar;
@@ -85,7 +95,10 @@ public class MainController {
 
             stage.setScene(new Scene(addReceiptView));
             stage.show();
-        } catch(IOException ex) {}
+        } catch(IOException ex) {
+            logger.warning(ex.getMessage());
+            DialogHelper.showAlertWithException("View konnte nicht geladen werden!", ex);
+        }
     }
 
     @FXML
@@ -101,6 +114,11 @@ public class MainController {
             // re-render category list
             renderAccordion();
         }
+    }
+
+    @EventListener
+    public void processUpdatedReceiptsEvent(UpdatedReceiptsEvent event) {
+        logger.info("Updated receipts event received");
     }
 
     /**
