@@ -28,7 +28,7 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private Collection<Receipt> receipts = new ArrayList<>();
 
     protected Category() {};

@@ -30,6 +30,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -52,6 +53,9 @@ import java.util.logging.Logger;
 @Component
 public class MainController {
     private final static Logger logger = Logger.getLogger(MainController.class.getName());
+
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -149,9 +153,14 @@ public class MainController {
                 var receiptLink = new Hyperlink();
                 receiptLink.setText(receipt.getTitle());
                 receiptLink.setOnMouseClicked((event) -> {
-                    createReceiptTab(receipt.getId());
+                    // check if is right button
+                    if(event.getButton() == MouseButton.PRIMARY) {
+                        createReceiptTab(receipt.getId());
+                    }
                 });
+                receiptLink.setContextMenu(createReceiptContextMenu(receipt.getId()));
 
+                // add element to list
                 receiptList.getChildren().add(receiptLink);
             }
 
@@ -203,5 +212,45 @@ public class MainController {
 
         // focus tab
         tabReceipts.getSelectionModel().select(receiptTab);
+    }
+
+    private ContextMenu createReceiptContextMenu(Long receiptId) {
+        var contextMenu = new ContextMenu();
+
+        // Edit
+        var mnuEdit = new MenuItem();
+        mnuEdit.setText("Bearbeiten");
+
+        // Delete
+        var mnuDelete = new MenuItem();
+        mnuDelete.setText("Löschen");
+        mnuDelete.setOnAction((event) -> handleDeleteReceipt(receiptId));
+
+        contextMenu.getItems().addAll(mnuEdit, mnuDelete);
+
+        return contextMenu;
+    }
+
+    private void handleDeleteReceipt(Long receiptId) {
+        var receipt = receiptRepository.findById(receiptId);
+        if(receipt.isEmpty()) {
+            // this should never happen!
+            logger.warning("Got unknown receipt id!");
+            return;
+        }
+
+        if(!DialogHelper.askConfirmation(
+                String.format("Willst du das Rezept '%s' wirklich löschen?",
+                        receipt.get().getTitle()
+                )
+        )) {
+            return;
+        }
+
+        logger.info("Deleting receipt id: " + receiptId);
+        receiptRepository.delete(receipt.get());
+
+        // send event that receipts are updated
+        applicationEventPublisher.publishEvent(new UpdatedReceiptsEvent());
     }
 }
