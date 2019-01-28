@@ -87,6 +87,7 @@ public class AddReceiptController {
         stage.close();
     }
 
+    @SuppressWarnings("unchecked")
     private void renderCategoryList() {
         var categories = categoryRepository.findAll().iterator();
         var categoryList = new ArrayList<String>();
