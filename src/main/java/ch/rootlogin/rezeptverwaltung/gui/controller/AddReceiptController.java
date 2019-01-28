@@ -2,6 +2,8 @@ package ch.rootlogin.rezeptverwaltung.gui.controller;
 
 import ch.rootlogin.rezeptverwaltung.event.UpdatedReceiptsEvent;
 import ch.rootlogin.rezeptverwaltung.helper.DialogHelper;
+import ch.rootlogin.rezeptverwaltung.model.Category;
+import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
 import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 import javafx.application.Platform;
@@ -71,6 +73,12 @@ public class AddReceiptController {
             return;
         }
 
+        // create receipt
+        var receipt = new Receipt(title, content);
+        receipt.setCategory(getCreateCategory(category));
+
+        receiptRepository.save(receipt);
+
         // send updated event
         applicationEventPublisher.publishEvent(new UpdatedReceiptsEvent());
 
@@ -91,5 +99,15 @@ public class AddReceiptController {
 
         category.getItems().setAll(categoryList);
         category.setValue(categoryList.get(0));
+    }
+
+    private Category getCreateCategory(String category) {
+        var cat = categoryRepository.getByNameEquals(category);
+        if(cat == null) {
+            cat = new Category(category);
+            categoryRepository.save(cat);
+        }
+
+        return cat;
     }
 }

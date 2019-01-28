@@ -119,6 +119,8 @@ public class MainController {
     @EventListener
     public void processUpdatedReceiptsEvent(UpdatedReceiptsEvent event) {
         logger.info("Updated receipts event received");
+
+        renderAccordion();
     }
 
     /**
