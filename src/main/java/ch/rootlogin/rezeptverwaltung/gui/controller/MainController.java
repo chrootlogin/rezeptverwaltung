@@ -31,21 +31,18 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import org.jtwig.JtwigModel;
+import org.jtwig.JtwigTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Node;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -196,18 +193,25 @@ public class MainController {
 
         // render markdown to html
         var document = parser.parse(receipt.get().getContent());
-        var html = renderer.render(document);  // "<p>This is <em>Sparta</em></p>\n"
+        var receiptHTML = renderer.render(document);
+
+        // parse templates
+        var template = JtwigTemplate.classpathTemplate("/templates/receipt.twig");
+        var model = JtwigModel.newModel().with("receipt", receiptHTML);
+        var html = template.render(model);
 
         // create web view and add html
         var webView = new WebView();
         webView.getEngine().loadContent(html);
+        webView.setContextMenuEnabled(false);
 
         // create and addtab
         var receiptTab = new Tab();
         receiptTab.setClosable(true);
         receiptTab.setText(receipt.get().getTitle());
-
         receiptTab.setContent(webView);
+        receiptTab.setContextMenu(createReceiptContextMenu(receipt.get().getId()));
+
         tabReceipts.getTabs().add(receiptTab);
 
         // focus tab

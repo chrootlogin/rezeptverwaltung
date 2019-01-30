@@ -14,9 +14,9 @@ jobs:
       cache:
         directories:
           - '$HOME/.m2/repository'
-          - '$HOME/.sonar/cache'
 
       script:
+        - git submodule update
         - mvn clean package
 
 deploy:

@@ -22,6 +22,7 @@
 		<java.version>11</java.version>
 		<openjfx.version>11.0.2</openjfx.version>
 		<flexmark.version>0.40.16</flexmark.version>
+		<jtwig.version>5.87.0.RELEASE</jtwig.version>
 	</properties>
 
 	<dependencies>
@@ -53,6 +54,11 @@
 			<groupId>com.vladsch.flexmark</groupId>
 			<artifactId>flexmark-all</artifactId>
 			<version>${flexmark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jtwig</groupId>
+			<artifactId>jtwig-core</artifactId>
+			<version>${jtwig.version}</version>
 		</dependency>
 	</dependencies>
 
