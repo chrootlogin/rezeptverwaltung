@@ -302,6 +302,7 @@ public class MainController {
 
         webPane.getChildren().add(webView);
 
+        // load index page
         try {
             var is = MainController.class.getResourceAsStream("/html/index.html");
             var html = IOUtils.toString(is);
