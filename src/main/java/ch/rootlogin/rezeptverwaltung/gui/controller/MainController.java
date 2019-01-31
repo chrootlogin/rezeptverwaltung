@@ -46,6 +46,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -285,6 +287,9 @@ public class MainController {
             // add to pane list
             categoryPanes.add(titledPane);
         }
+
+        // Sort by title
+        Collections.sort(categoryPanes, Comparator.comparing(Labeled::getText));
 
         // refresh accordion
         categoryAccordion.getPanes().setAll(categoryPanes);
