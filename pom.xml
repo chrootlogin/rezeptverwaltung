@@ -23,6 +23,7 @@
 		<openjfx.version>11.0.2</openjfx.version>
 		<flexmark.version>0.40.16</flexmark.version>
 		<jtwig.version>5.87.0.RELEASE</jtwig.version>
+		<commons.version>2.6</commons.version>
 	</properties>
 
 	<dependencies>
@@ -63,7 +64,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>${commons.version}</version>
 		</dependency>
 	</dependencies>
 
