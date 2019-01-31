@@ -26,6 +26,9 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+/**
+ * This class shows a pretty preloader :D
+ */
 public class ApplicationPreloader extends Preloader {
 
     private Stage preloaderStage;
@@ -79,6 +82,11 @@ public class ApplicationPreloader extends Preloader {
         primaryStage.show();
     }
 
+    /**
+     * Receives notifications and stopps on PreloaderCloseNotification
+     *
+     * @param pn The notification
+     */
     @Override
     public void handleApplicationNotification(PreloaderNotification pn) {
         if(pn instanceof PreloaderStatusNotification) {
