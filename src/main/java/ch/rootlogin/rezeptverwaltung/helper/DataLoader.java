@@ -80,21 +80,21 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
             marmorkuchen.setTitle("Marmorkuchen");
             marmorkuchen.setContent(
                     "**Zutaten**\n\n" +
-                            " * 250g Butter\n" +
-                            " * 250g Zucker\n" +
-                            " * 1 Beutel Vanillezucker\n" +
-                            " * 2 TL Rum\n" +
-                            " * 4 Eier\n" +
-                            " * 500g Mehl\n" +
-                            " * 1 TL Backpulver\n" +
-                            " * 1 Prise Salz\n" +
-                            " * 1 dl Milch\n" +
-                            " * 30g Kakaopulver\n\n" +
-                            "**Zubereitung**\n\n" +
-                            "Zuerst die Eier, den Zucker und die Butter verrühren. Danach alle Zutaten, *ausser das Kakaopulver*, unterrühren.\n" +
-                            "Teig in 2 Teile teilen. Bei der einen Hälfte Kakaopulver unterühren. Danach in die Form füllen und mit einer Gabel durchziehen.\n\n" +
-                            "**Backen**\n\n" +
-                            "50 Minuten bei 160°C Umluft."
+                    " * 250g Butter\n" +
+                    " * 250g Zucker\n" +
+                    " * 1 Beutel Vanillezucker\n" +
+                    " * 2 TL Rum\n" +
+                    " * 4 Eier\n" +
+                    " * 500g Mehl\n" +
+                    " * 1 TL Backpulver\n" +
+                    " * 1 Prise Salz\n" +
+                    " * 1 dl Milch\n" +
+                    " * 30g Kakaopulver\n\n" +
+                    "**Zubereitung**\n\n" +
+                    "Zuerst die Eier, den Zucker und die Butter verrühren. Danach alle Zutaten, *ausser das Kakaopulver*, unterrühren.\n" +
+                    "Teig in 2 Teile teilen. Bei der einen Hälfte Kakaopulver unterühren. Danach in die Form füllen und mit einer Gabel durchziehen.\n\n" +
+                    "**Backen**\n\n" +
+                    "50 Minuten bei 160°C Umluft."
             );
             marmorkuchen.setCategory(kuchen);
             receiptRepository.save(marmorkuchen);
