@@ -16,6 +16,7 @@
 package ch.rootlogin.rezeptverwaltung.gui.controller;
 
 import ch.rootlogin.rezeptverwaltung.event.UpdatedReceiptsEvent;
+import ch.rootlogin.rezeptverwaltung.helper.ApplicationContextProvider;
 import ch.rootlogin.rezeptverwaltung.helper.DialogHelper;
 import ch.rootlogin.rezeptverwaltung.helper.Helper;
 import ch.rootlogin.rezeptverwaltung.model.Category;
@@ -28,9 +29,12 @@ import com.vladsch.flexmark.parser.Parser;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import javafx.scene.web.WebView;
@@ -67,7 +71,14 @@ public class MainController {
     private Accordion categoryAccordion;
 
     @FXML
-    private TabPane tabReceipts;
+    private AnchorPane webPane;
+
+    /**
+     * Ugly JavaFX runtime issue fix...
+     * JavaFX always shows a stacktrace if I try
+     * to directly do this in the FXML-file -.-
+     */
+    private WebView webView;
 
     @FXML
     public void initialize() {
@@ -77,6 +88,9 @@ public class MainController {
         }
 
         renderAccordion();
+
+        // render the webview...
+        Platform.runLater(this::renderWebView);
     }
 
     @FXML
@@ -99,9 +113,39 @@ public class MainController {
     public void handleCreateReceiptAction(ActionEvent event) {
         try {
             var stage = new Stage();
-            var addReceiptView = Helper.loadFXParent("/views/addReceipt.fxml");
+            var addReceiptView = Helper.loadFXParent("/views/receipt.fxml");
 
             stage.setScene(new Scene(addReceiptView));
+            stage.show();
+        } catch(IOException ex) {
+            logger.warning(ex.getMessage());
+            DialogHelper.showAlertWithException("View konnte nicht geladen werden!", ex);
+        }
+    }
+
+    @FXML
+    private void handleEditReceipt(Long receiptId) {
+        try {
+            var context = ApplicationContextProvider.getApplicationContext();
+
+            var fxmlLoader = new FXMLLoader();
+            fxmlLoader.setControllerFactory(context::getBean);
+
+            var stage = new Stage();
+            stage.setScene(
+                    new Scene((Pane) fxmlLoader.load(Helper.getInputStream("/views/receipt.fxml")))
+            );
+
+            var receipt = receiptRepository.findById(receiptId);
+            if(receipt.isEmpty()) {
+                // this should never happen!
+                logger.warning("Got unknown receipt id!");
+                return;
+            }
+
+            var receiptController = fxmlLoader.<ReceiptController>getController();
+            receiptController.setReceipt(receipt.get());
+
             stage.show();
         } catch(IOException ex) {
             logger.warning(ex.getMessage());
@@ -152,7 +196,7 @@ public class MainController {
                 receiptLink.setOnMouseClicked((event) -> {
                     // check if is right button
                     if(event.getButton() == MouseButton.PRIMARY) {
-                        createReceiptTab(receipt.getId());
+                        renderReceipt(receipt.getId());
                     }
                 });
                 receiptLink.setContextMenu(createReceiptContextMenu(receipt.getId()));
@@ -181,7 +225,7 @@ public class MainController {
         }
     }
 
-    private void createReceiptTab(Long receiptId) {
+    private void renderReceipt(Long receiptId) {
         var parser = Parser.builder().build();
         var renderer = HtmlRenderer.builder().build();
         var receipt = receiptRepository.findById(receiptId);
@@ -200,22 +244,7 @@ public class MainController {
         var model = JtwigModel.newModel().with("receipt", receiptHTML);
         var html = template.render(model);
 
-        // create web view and add html
-        var webView = new WebView();
         webView.getEngine().loadContent(html);
-        webView.setContextMenuEnabled(false);
-
-        // create and addtab
-        var receiptTab = new Tab();
-        receiptTab.setClosable(true);
-        receiptTab.setText(receipt.get().getTitle());
-        receiptTab.setContent(webView);
-        receiptTab.setContextMenu(createReceiptContextMenu(receipt.get().getId()));
-
-        tabReceipts.getTabs().add(receiptTab);
-
-        // focus tab
-        tabReceipts.getSelectionModel().select(receiptTab);
     }
 
     private ContextMenu createReceiptContextMenu(Long receiptId) {
@@ -224,6 +253,7 @@ public class MainController {
         // Edit
         var mnuEdit = new MenuItem();
         mnuEdit.setText("Bearbeiten");
+        mnuEdit.setOnAction((event) -> handleEditReceipt(receiptId));
 
         // Delete
         var mnuDelete = new MenuItem();
@@ -256,5 +286,20 @@ public class MainController {
 
         // send event that receipts are updated
         applicationEventPublisher.publishEvent(new UpdatedReceiptsEvent());
+    }
+
+    /**
+     * Renders the webview
+     *
+     * I don't know, why but somehow javafx is always failing
+     * if I create the webview directly in FXML ;)
+     */
+    private void renderWebView() {
+        webView = new WebView();
+        webView.setContextMenuEnabled(false);
+        webView.prefHeightProperty().bind(webPane.heightProperty());
+        webView.prefWidthProperty().bind(webPane.widthProperty());
+
+        webPane.getChildren().add(webView);
     }
 }

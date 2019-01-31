@@ -1,3 +1,18 @@
+/* This file is part of Rezeptverwaltung.
+ *
+ * Rezeptverwaltung is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Rezeptverwaltung is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Rezeptverwaltung.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package ch.rootlogin.rezeptverwaltung.gui.controller;
 
 import ch.rootlogin.rezeptverwaltung.event.UpdatedReceiptsEvent;
@@ -7,25 +22,28 @@ import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
 import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This controller is used for handling
  * the add receipt window.
  */
 @Component
-public class AddReceiptController {
+public class ReceiptController {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -34,6 +52,9 @@ public class AddReceiptController {
 
     @Autowired
     private ReceiptRepository receiptRepository;
+
+    @FXML
+    private Text txtHeader;
 
     @FXML
     private TextField title;
@@ -46,6 +67,8 @@ public class AddReceiptController {
 
     @FXML
     private Button btnSave;
+
+    private Receipt receipt;
 
     @FXML
     public void initialize() {
@@ -72,10 +95,13 @@ public class AddReceiptController {
             return;
         }
 
-        // create receipt
-        var receipt = new Receipt(title, content);
+        if(receipt == null) {
+            // create receipt
+            receipt = new Receipt();
+        }
+        receipt.setTitle(title);
+        receipt.setContent(content);
         receipt.setCategory(getCreateCategory(category));
-
         receiptRepository.save(receipt);
 
         // send updated event
@@ -89,12 +115,14 @@ public class AddReceiptController {
     @SuppressWarnings("unchecked")
     private void renderCategoryList() {
         var categories = categoryRepository.findAll().iterator();
-        var categoryList = new ArrayList<String>();
+
+        ObservableList<Category> categoryList
+                = FXCollections.observableArrayList();
 
         while(categories.hasNext()) {
             var category = categories.next();
 
-            categoryList.add(category.getName());
+            categoryList.add(category);
         }
 
         category.getItems().setAll(categoryList);
@@ -109,5 +137,24 @@ public class AddReceiptController {
         }
 
         return cat;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setReceipt(Receipt receipt) {
+        this.receipt = receipt;
+
+        txtHeader.setText("Rezept bearbeiten");
+
+        this.title.setText(receipt.getTitle());
+        this.content.setText(receipt.getContent());
+
+        for(var i = 0; i < category.getItems().size(); i++) {
+            var cat = (Category) category.getItems().get(i);
+
+            if (Objects.equals(cat.getId(), receipt.getCategory().getId())) {
+                category.setValue(cat);
+                return;
+            }
+        }
     }
 }

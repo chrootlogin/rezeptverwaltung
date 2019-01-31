@@ -34,7 +34,7 @@ public class Receipt {
     @JoinColumn(name="category_fk")
     private Category category;
 
-    protected Receipt() {}
+    public Receipt() {}
 
     public Receipt(String title, String content) {
         this.title = title;

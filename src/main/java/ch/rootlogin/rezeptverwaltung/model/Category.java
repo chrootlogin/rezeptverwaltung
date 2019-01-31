@@ -60,4 +60,8 @@ public class Category {
     public void removeReceipt(Receipt receipt) {
         receipts.remove(receipt);
     }
+
+    public String toString() {
+        return name;
+    }
 }

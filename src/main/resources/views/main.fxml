@@ -4,13 +4,12 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.web.WebView?>
 
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
 <GridPane alignment="CENTER" hgap="10" prefHeight="400" prefWidth="600" vgap="10" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.rootlogin.rezeptverwaltung.gui.controller.MainController">
 
     <columnConstraints>
@@ -39,5 +38,5 @@
 
     <Accordion fx:id="categoryAccordion" GridPane.rowIndex="1" GridPane.columnIndex="0" />
 
-    <TabPane fx:id="tabReceipts" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" />
+    <AnchorPane fx:id="webPane" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS" />
 </GridPane>
