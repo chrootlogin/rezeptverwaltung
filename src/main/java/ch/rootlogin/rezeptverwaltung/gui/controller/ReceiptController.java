@@ -110,6 +110,12 @@ public class ReceiptController {
         }
     }
 
+    /**
+     * Saves a receipt.
+     *
+     * @param event The event action
+     */
+    @FXML
     public void handleSaveAction(ActionEvent event) {
         var category = (String) this.category.getValue();
         var title = this.title.getText();
@@ -143,10 +149,11 @@ public class ReceiptController {
         stage.close();
     }
 
+    /**
+     * Renders the category list ;)
+     */
     @SuppressWarnings("unchecked")
     private void renderCategoryList() {
-        //var categories = categoryRepository.findAll().iterator();
-
         ObservableList<Category> categoryList
                 = FXCollections.observableArrayList();
 

@@ -20,15 +20,12 @@ import ch.rootlogin.rezeptverwaltung.helper.ApplicationContextProvider;
 import ch.rootlogin.rezeptverwaltung.helper.DialogHelper;
 import ch.rootlogin.rezeptverwaltung.helper.Helper;
 import ch.rootlogin.rezeptverwaltung.model.Category;
-import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
 import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,7 +35,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import org.apache.commons.io.IOUtils;
@@ -48,7 +44,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -180,6 +175,17 @@ public class MainController {
     }
 
     @FXML
+    private void handleCloseAction(ActionEvent event) {
+        Platform.exit();
+    }
+
+    @EventListener
+    public void processUpdatedReceiptsEvent(UpdatedReceiptsEvent event) {
+        logger.info("Updated receipts event received");
+
+        renderAccordion();
+    }
+
     private void handleEditReceipt(Long receiptId) {
         try {
             var context = ApplicationContextProvider.getApplicationContext();
@@ -209,9 +215,27 @@ public class MainController {
         }
     }
 
-    @FXML
-    public void handleCloseAction(ActionEvent event) {
-        Platform.exit();
+    private void handleDeleteReceipt(Long receiptId) {
+        var receipt = receiptRepository.findById(receiptId);
+        if(receipt.isEmpty()) {
+            // this should never happen!
+            logger.warning("Got unknown receipt id!");
+            return;
+        }
+
+        if(!DialogHelper.askConfirmation(
+                String.format("Willst du das Rezept '%s' wirklich löschen?",
+                        receipt.get().getTitle()
+                )
+        )) {
+            return;
+        }
+
+        logger.info("Deleting receipt id: " + receiptId);
+        receiptRepository.delete(receipt.get());
+
+        // send event that receipts are updated
+        applicationEventPublisher.publishEvent(new UpdatedReceiptsEvent());
     }
 
     private void createCategory(String name) {
@@ -222,13 +246,6 @@ public class MainController {
             // re-render category list
             renderAccordion();
         }
-    }
-
-    @EventListener
-    public void processUpdatedReceiptsEvent(UpdatedReceiptsEvent event) {
-        logger.info("Updated receipts event received");
-
-        renderAccordion();
     }
 
     /**
@@ -282,6 +299,11 @@ public class MainController {
         }
     }
 
+    /**
+     * Renders a receipt
+     *
+     * @param receiptId Receipt ID
+     */
     private void renderReceipt(Long receiptId) {
         var parser = Parser.builder().build();
         var renderer = HtmlRenderer.builder().build();
@@ -307,6 +329,12 @@ public class MainController {
         webView.getEngine().loadContent(html);
     }
 
+    /**
+     * Creates the context menu for a receipt.
+     *
+     * @param receiptId ID of the receipt
+     * @return Context menu
+     */
     private ContextMenu createReceiptContextMenu(Long receiptId) {
         var contextMenu = new ContextMenu();
 
@@ -323,29 +351,6 @@ public class MainController {
         contextMenu.getItems().addAll(mnuEdit, mnuDelete);
 
         return contextMenu;
-    }
-
-    private void handleDeleteReceipt(Long receiptId) {
-        var receipt = receiptRepository.findById(receiptId);
-        if(receipt.isEmpty()) {
-            // this should never happen!
-            logger.warning("Got unknown receipt id!");
-            return;
-        }
-
-        if(!DialogHelper.askConfirmation(
-                String.format("Willst du das Rezept '%s' wirklich löschen?",
-                        receipt.get().getTitle()
-                )
-        )) {
-            return;
-        }
-
-        logger.info("Deleting receipt id: " + receiptId);
-        receiptRepository.delete(receipt.get());
-
-        // send event that receipts are updated
-        applicationEventPublisher.publishEvent(new UpdatedReceiptsEvent());
     }
 
     /**
