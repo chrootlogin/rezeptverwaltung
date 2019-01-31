@@ -31,9 +31,6 @@
         <Menu text="Rezept">
             <MenuItem onAction="#handleCreateReceiptAction" text="Erstellen" />
         </Menu>
-        <Menu text="Über">
-            <MenuItem onAction="#handleAboutAction" text="Rezeptverwaltung" />
-        </Menu>
     </MenuBar>
 
     <Accordion fx:id="categoryAccordion" GridPane.rowIndex="1" GridPane.columnIndex="0" />

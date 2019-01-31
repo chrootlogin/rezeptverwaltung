@@ -94,11 +94,6 @@ public class MainController {
     }
 
     @FXML
-    public void handleAboutAction(ActionEvent event) {
-
-    }
-
-    @FXML
     public void handleCreateCategoryAction(ActionEvent event) {
         var dialog = new TextInputDialog();
         dialog.setTitle("Kategorie erstellen");
