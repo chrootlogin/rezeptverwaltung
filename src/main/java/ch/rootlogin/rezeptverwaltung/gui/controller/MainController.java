@@ -39,6 +39,7 @@ import javafx.scene.layout.VBox;
 
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import org.apache.commons.io.IOUtils;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -237,7 +238,10 @@ public class MainController {
 
         // parse templates
         var template = JtwigTemplate.classpathTemplate("/templates/receipt.twig");
-        var model = JtwigModel.newModel().with("receipt", receiptHTML);
+        var model = JtwigModel.newModel();
+        model.with("receipt", receiptHTML);
+        model.with("title", receipt.get().getTitle());
+
         var html = template.render(model);
 
         webView.getEngine().loadContent(html);
@@ -297,5 +301,14 @@ public class MainController {
         webView.prefWidthProperty().bind(webPane.widthProperty());
 
         webPane.getChildren().add(webView);
+
+        try {
+            var is = MainController.class.getResourceAsStream("/html/index.html");
+            var html = IOUtils.toString(is);
+
+            webView.getEngine().loadContent(html);
+        } catch (IOException ex) {
+            logger.warning(String.format("Couldn't load index.html: %s", ex.getMessage()));
+        }
     }
 }

@@ -20,6 +20,8 @@ module ch.rootlogin.rezeptverwaltung {
 
     requires jtwig.core;
 
+    requires org.apache.commons.io;
+
     opens ch.rootlogin.rezeptverwaltung to spring.core, spring.beans, spring.context, javafx.graphics;
 
     opens ch.rootlogin.rezeptverwaltung.gui.controller to spring.core, spring.beans, javafx.fxml;
