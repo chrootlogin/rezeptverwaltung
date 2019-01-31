@@ -15,7 +15,10 @@
  */
 package ch.rootlogin.rezeptverwaltung.repository;
 
+import ch.rootlogin.rezeptverwaltung.model.Category;
 import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import org.springframework.data.repository.CrudRepository;
 
-public interface ReceiptRepository extends CrudRepository<Receipt, Long> {}
+public interface ReceiptRepository extends CrudRepository<Receipt, Long> {
+    Iterable<Receipt> findByCategoryEquals(Category category);
+}

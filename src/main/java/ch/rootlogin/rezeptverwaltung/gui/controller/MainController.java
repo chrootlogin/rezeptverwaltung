@@ -27,6 +27,8 @@ import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -81,6 +83,8 @@ public class MainController {
      */
     private WebView webView;
 
+    private String selectedCategoryPaneTitle;
+
     @FXML
     public void initialize() {
         // use macos system panel when possible...
@@ -91,12 +95,19 @@ public class MainController {
 
         renderAccordion();
 
+        // save selected change on change
+        categoryAccordion.expandedPaneProperty().addListener((ov, old_val, new_val) -> {
+            if(new_val != null) {
+                selectedCategoryPaneTitle = categoryAccordion.getExpandedPane().getText();
+            }
+        });
+
         // render the webview...
         Platform.runLater(this::renderWebView);
     }
 
     @FXML
-    public void handleCreateCategoryAction(ActionEvent event) {
+    private void handleCreateCategoryAction(ActionEvent event) {
         var dialog = new TextInputDialog();
         dialog.setTitle("Kategorie erstellen");
         dialog.setHeaderText("Erstelle eine neue Rezept-Kategorie.");
@@ -107,7 +118,7 @@ public class MainController {
     }
 
     @FXML
-    public void handleDeleteCategoryAction(ActionEvent event) {
+    private void handleDeleteCategoryAction(ActionEvent event) {
         var categories = categoryRepository.findAll().iterator();
 
         var categoryList = new ArrayList<Category>();
@@ -123,9 +134,31 @@ public class MainController {
         dialog.setContentText("Kategoriename:");
 
         var result = dialog.showAndWait();
+        if(result.isPresent()) {
+            var category = result.get();
 
-        if (result.isPresent()) {
-            categoryRepository.delete(result.get());
+            // ask for confirmation
+            if(!DialogHelper.askConfirmation(
+                    String.format("Willst du die Kategorie '%s' wirklich löschen? Alle Rezepte dieser Kategorie gehen verloren.",
+                            category.getName()
+                    )
+            )) {
+                return;
+            }
+
+            // first get sure that all childs are delete ;)
+            for (var receipt : receiptRepository.findByCategoryEquals(category)) {
+                logger.info(String.format("Deleting receipt id: %d", receipt.getId()));
+                receiptRepository.delete(receipt);
+            }
+
+            // update category, as we already removed them from the database ;)
+            var categoryResult = categoryRepository.findById(result.get().getId());
+            if(categoryResult.isPresent()) {
+                // finally delete category
+                logger.info(String.format("Deleting category id: %d", categoryResult.get().getId()));
+                categoryRepository.delete(categoryResult.get());
+            }
         }
 
         renderAccordion();
@@ -133,7 +166,7 @@ public class MainController {
     }
 
     @FXML
-    public void handleCreateReceiptAction(ActionEvent event) {
+    private void handleCreateReceiptAction(ActionEvent event) {
         try {
             var stage = new Stage();
             var addReceiptView = Helper.loadFXParent("/views/receipt.fxml");
@@ -202,18 +235,13 @@ public class MainController {
      * Renders the accordion on the left side
      */
     private void renderAccordion() {
-        var categories = categoryRepository.findAll().iterator();
-
         // iterate through all categories and create a title pane with links
-        var i = 0;
+        TitledPane lastOpenedPane = null;
         var categoryPanes = new ArrayList<TitledPane>();
-
-        while(categories.hasNext()) {
-            var category = categories.next();
-
+        for(var category : categoryRepository.findAll()) {
             // Create receipt links
             var receiptList = new VBox();
-            for (Receipt receipt : category.getReceipts()) {
+            for(var receipt : category.getReceipts()) {
                 var receiptLink = new Hyperlink();
                 receiptLink.setText(receipt.getTitle());
                 receiptLink.setOnMouseClicked((event) -> {
@@ -233,18 +261,24 @@ public class MainController {
             titledPane.setText(category.getName());
             titledPane.setContent(receiptList);
 
+            if(titledPane.getText().equals(selectedCategoryPaneTitle)) {
+                lastOpenedPane = titledPane;
+            }
+
             // add to pane list
             categoryPanes.add(titledPane);
-
-            i++;
         }
 
         // refresh accordion
         categoryAccordion.getPanes().setAll(categoryPanes);
 
         // if we have more than one pane, expand first
-        if(i > 0) {
-            categoryAccordion.setExpandedPane(categoryPanes.get(0));
+        if(categoryPanes.size() > 0) {
+            if(lastOpenedPane == null) {
+                categoryAccordion.setExpandedPane(categoryPanes.get(0));
+            } else {
+                categoryAccordion.setExpandedPane(lastOpenedPane);
+            }
         }
     }
 

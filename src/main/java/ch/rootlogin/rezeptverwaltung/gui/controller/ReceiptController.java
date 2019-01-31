@@ -75,6 +75,8 @@ public class ReceiptController {
 
     @FXML
     public void initialize() {
+        receipt = null;
+
         category.setEditable(true);
 
         // request focus after start
@@ -127,6 +129,7 @@ public class ReceiptController {
             // create receipt
             receipt = new Receipt();
         }
+
         receipt.setTitle(title);
         receipt.setContent(content);
         receipt.setCategory(getCreateCategory(category));
@@ -142,14 +145,12 @@ public class ReceiptController {
 
     @SuppressWarnings("unchecked")
     private void renderCategoryList() {
-        var categories = categoryRepository.findAll().iterator();
+        //var categories = categoryRepository.findAll().iterator();
 
         ObservableList<Category> categoryList
                 = FXCollections.observableArrayList();
 
-        while(categories.hasNext()) {
-            var category = categories.next();
-
+        for(var category : categoryRepository.findAll()) {
             categoryList.add(category);
         }
 
