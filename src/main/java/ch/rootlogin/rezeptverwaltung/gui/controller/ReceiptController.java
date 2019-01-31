@@ -68,6 +68,9 @@ public class ReceiptController {
     @FXML
     private Button btnSave;
 
+    /**
+     * Null on new receipt, set on edit mode
+     */
     private Receipt receipt;
 
     @FXML
@@ -78,6 +81,31 @@ public class ReceiptController {
         Platform.runLater(() -> title.requestFocus());
 
         renderCategoryList();
+    }
+
+    /**
+     * Allows setting a receipt
+     *
+     * This is used to edit a receipt.
+     * @param receipt Receipt to edit
+     */
+    @SuppressWarnings("unchecked")
+    public void setReceipt(Receipt receipt) {
+        this.receipt = receipt;
+
+        txtHeader.setText("Rezept bearbeiten");
+
+        this.title.setText(receipt.getTitle());
+        this.content.setText(receipt.getContent());
+
+        for(var i = 0; i < category.getItems().size(); i++) {
+            var cat = (Category) category.getItems().get(i);
+
+            if (Objects.equals(cat.getId(), receipt.getCategory().getId())) {
+                category.setValue(cat);
+                return;
+            }
+        }
     }
 
     public void handleSaveAction(ActionEvent event) {
@@ -129,6 +157,12 @@ public class ReceiptController {
         category.setValue(categoryList.get(0));
     }
 
+    /**
+     * Gets a category by string, if it's not existing it gets created.
+     * @param category Name of category
+     *
+     * @return Category object
+     */
     private Category getCreateCategory(String category) {
         var cat = categoryRepository.getByNameEquals(category);
         if(cat == null) {
@@ -137,24 +171,5 @@ public class ReceiptController {
         }
 
         return cat;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setReceipt(Receipt receipt) {
-        this.receipt = receipt;
-
-        txtHeader.setText("Rezept bearbeiten");
-
-        this.title.setText(receipt.getTitle());
-        this.content.setText(receipt.getContent());
-
-        for(var i = 0; i < category.getItems().size(); i++) {
-            var cat = (Category) category.getItems().get(i);
-
-            if (Objects.equals(cat.getId(), receipt.getCategory().getId())) {
-                category.setValue(cat);
-                return;
-            }
-        }
     }
 }

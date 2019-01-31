@@ -82,6 +82,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        // use macos system panel when possible...
         final String os = System.getProperty("os.name");
         if (os != null && os.startsWith("Mac")) {
             mainMenuBar.useSystemMenuBarProperty().set(true);
