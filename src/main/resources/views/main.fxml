@@ -27,6 +27,7 @@
         </Menu>
         <Menu text="Kategorie">
             <MenuItem onAction="#handleCreateCategoryAction" text="Erstellen" />
+            <MenuItem onAction="#handleDeleteCategoryAction" text="Löschen" />
         </Menu>
         <Menu text="Rezept">
             <MenuItem onAction="#handleCreateReceiptAction" text="Erstellen" />

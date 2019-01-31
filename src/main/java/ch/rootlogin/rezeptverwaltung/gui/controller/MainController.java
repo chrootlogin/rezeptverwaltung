@@ -107,6 +107,32 @@ public class MainController {
     }
 
     @FXML
+    public void handleDeleteCategoryAction(ActionEvent event) {
+        var categories = categoryRepository.findAll().iterator();
+
+        var categoryList = new ArrayList<Category>();
+        while(categories.hasNext()) {
+            var category = categories.next();
+
+            categoryList.add(category);
+        }
+
+        var dialog = new ChoiceDialog<>(categoryList.get(0), categoryList);
+        dialog.setTitle("Kategorie löschen");
+        dialog.setHeaderText("Lösche eine neue Rezept-Kategorie.");
+        dialog.setContentText("Kategoriename:");
+
+        var result = dialog.showAndWait();
+
+        if (result.isPresent()) {
+            categoryRepository.delete(result.get());
+        }
+
+        renderAccordion();
+        renderWebView();
+    }
+
+    @FXML
     public void handleCreateReceiptAction(ActionEvent event) {
         try {
             var stage = new Stage();
