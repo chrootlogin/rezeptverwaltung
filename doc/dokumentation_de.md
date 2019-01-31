@@ -75,7 +75,6 @@ $ mvn clean package
 
 Der Quellcode wird automatisch mit [Travis-CI](https://travis-ci.com/chrootlogin/rezeptverwaltung) gebaut und auf Bintray hochgeladen. Somit stehen jederzeit aktuelle Päckchen zur Verfügung.
 
-
 ### Lizenz
 
 Der Quellcode steht unter der GNU General Public License 3.0 bereit.
@@ -106,3 +105,6 @@ Interfaces und Vererbung werden an mehreren Orten eingesetzt. Beispielsweise sin
 
 Collections werden oft eingesetzt, insbesondere die ComboBoxen zur Auswahl der Kategorie stellen Collections dar. Auch wird mit den Kategorien als Collections gearbeitet. Zusätzlich werden die Kategorien und Rezepte mit der Sort-Funktionalität alphabetisch geordnet.
 
+#### ENUMs
+
+Der Datentyp eines Rezepts (Text oder Markdown) wird als ENUM gespeichert. Aktuell ist diese Funktion allerdings nicht in Benutzung. Der Typ eines Rezepts wird zwar gespeichert, ist aber immer Markdown.

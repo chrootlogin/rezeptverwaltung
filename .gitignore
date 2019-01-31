@@ -1,3 +1,5 @@
+*.pdf
+*.docx
 data.mv.db
 !.mvn/wrapper/maven-wrapper.jar
 
