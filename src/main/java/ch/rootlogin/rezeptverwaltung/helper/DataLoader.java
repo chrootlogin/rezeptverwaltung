@@ -19,6 +19,7 @@ import ch.rootlogin.rezeptverwaltung.model.Category;
 import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
 import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
+import ch.rootlogin.rezeptverwaltung.type.ReceiptType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -60,6 +61,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
             var gleichschwer = new Receipt();
             gleichschwer.setTitle("Gleichschwer");
+            gleichschwer.setReceiptType(ReceiptType.MARKDOWN);
             gleichschwer.setContent(
                     "**Zutaten**\n\n" +
                     " * 250g Butter\n" +
@@ -78,6 +80,7 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
 
             var marmorkuchen = new Receipt();
             marmorkuchen.setTitle("Marmorkuchen");
+            marmorkuchen.setReceiptType(ReceiptType.MARKDOWN);
             marmorkuchen.setContent(
                     "**Zutaten**\n\n" +
                     " * 250g Butter\n" +

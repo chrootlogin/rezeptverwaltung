@@ -15,6 +15,8 @@
  */
 package ch.rootlogin.rezeptverwaltung.model;
 
+import ch.rootlogin.rezeptverwaltung.type.ReceiptType;
+
 import javax.persistence.*;
 
 @Entity
@@ -26,6 +28,9 @@ public class Receipt {
 
     @Column(nullable = false)
     private String title;
+
+    @Column
+    private ReceiptType receiptType = ReceiptType.MARKDOWN;
 
     @Column
     @Lob
@@ -56,6 +61,14 @@ public class Receipt {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public ReceiptType getReceiptType() {
+        return receiptType;
+    }
+
+    public void setReceiptType(ReceiptType receiptType) {
+        this.receiptType = receiptType;
     }
 
     public String getContent() {

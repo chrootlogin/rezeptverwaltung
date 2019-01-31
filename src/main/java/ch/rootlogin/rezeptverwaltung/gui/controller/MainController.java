@@ -23,6 +23,7 @@ import ch.rootlogin.rezeptverwaltung.model.Category;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
 import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 
+import ch.rootlogin.rezeptverwaltung.type.ReceiptType;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import javafx.application.Platform;
@@ -320,8 +321,6 @@ public class MainController {
      * @param receiptId Receipt ID
      */
     private void renderReceipt(Long receiptId) {
-        var parser = Parser.builder().build();
-        var renderer = HtmlRenderer.builder().build();
         var receipt = receiptRepository.findById(receiptId);
         if(receipt.isEmpty()) {
             // this should never happen!
@@ -329,14 +328,21 @@ public class MainController {
             return;
         }
 
-        // render markdown to html
-        var document = parser.parse(receipt.get().getContent());
-        var receiptHTML = renderer.render(document);
+        var content = receipt.get().getContent();
+        if(receipt.get().getReceiptType() == ReceiptType.MARKDOWN) {
+            // init markdown renderer
+            var parser = Parser.builder().build();
+            var renderer = HtmlRenderer.builder().build();
+
+            // render markdown to html
+            var document = parser.parse(content);
+            content = renderer.render(document);
+        }
 
         // parse templates
         var template = JtwigTemplate.classpathTemplate("/templates/receipt.twig");
         var model = JtwigModel.newModel();
-        model.with("receipt", receiptHTML);
+        model.with("receipt", content);
         model.with("title", receipt.get().getTitle());
 
         var html = template.render(model);
@@ -377,8 +383,6 @@ public class MainController {
     private void renderWebView() {
         webView = new WebView();
         webView.setContextMenuEnabled(false);
-        //webView.prefHeightProperty().bind(webPane.heightProperty());
-        //webView.prefWidthProperty().bind(webPane.widthProperty());
 
         webPane.getChildren().add(webView);
 
