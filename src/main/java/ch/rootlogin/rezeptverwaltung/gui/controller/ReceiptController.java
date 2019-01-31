@@ -36,6 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -160,6 +162,9 @@ public class ReceiptController {
         for(var category : categoryRepository.findAll()) {
             categoryList.add(category);
         }
+
+        // sort categories
+        Collections.sort(categoryList, Comparator.comparing(Category::getName));
 
         category.getItems().setAll(categoryList);
         category.setValue(categoryList.get(0));

@@ -116,14 +116,13 @@ public class MainController {
 
     @FXML
     private void handleDeleteCategoryAction(ActionEvent event) {
-        var categories = categoryRepository.findAll().iterator();
-
         var categoryList = new ArrayList<Category>();
-        while(categories.hasNext()) {
-            var category = categories.next();
-
+        for(var category : categoryRepository.findAll()) {
             categoryList.add(category);
         }
+
+        // Sort categories by title
+        Collections.sort(categoryList, Comparator.comparing(Category::getName));
 
         var dialog = new ChoiceDialog<>(categoryList.get(0), categoryList);
         dialog.setTitle("Kategorie löschen");
@@ -259,7 +258,7 @@ public class MainController {
         var categoryPanes = new ArrayList<TitledPane>();
         for(var category : categoryRepository.findAll()) {
             // Create receipt links
-            var receiptList = new VBox();
+            var receiptList = new ArrayList<Hyperlink>();
             for(var receipt : category.getReceipts()) {
                 var receiptLink = new Hyperlink();
                 receiptLink.setText(receipt.getTitle());
@@ -272,14 +271,24 @@ public class MainController {
                 receiptLink.setContextMenu(createReceiptContextMenu(receipt.getId()));
 
                 // add element to list
-                receiptList.getChildren().add(receiptLink);
+                receiptList.add(receiptLink);
             }
+
+            // sort by receipt list
+            Collections.sort(receiptList, Comparator.comparing(Hyperlink::getText));
 
             // Create pane for showing receipts
             var titledPane = new TitledPane();
             titledPane.setText(category.getName());
-            titledPane.setContent(receiptList);
 
+            // create box for receipts
+            var receiptListBox = new VBox();
+            receiptListBox.getChildren().setAll(receiptList);
+
+            // add box to pane
+            titledPane.setContent(receiptListBox);
+
+            // if pane name is the same as before, then set as last opened pane
             if(titledPane.getText().equals(selectedCategoryPaneTitle)) {
                 lastOpenedPane = titledPane;
             }
@@ -288,8 +297,8 @@ public class MainController {
             categoryPanes.add(titledPane);
         }
 
-        // Sort by title
-        Collections.sort(categoryPanes, Comparator.comparing(Labeled::getText));
+        // Sort categories by title
+        Collections.sort(categoryPanes, Comparator.comparing(TitledPane::getText));
 
         // refresh accordion
         categoryAccordion.getPanes().setAll(categoryPanes);
