@@ -27,7 +27,8 @@ public class Receipt {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column
+    @Lob
     private String content;
 
     @ManyToOne

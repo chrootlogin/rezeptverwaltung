@@ -34,6 +34,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -71,7 +72,7 @@ public class MainController {
     private Accordion categoryAccordion;
 
     @FXML
-    private AnchorPane webPane;
+    private StackPane webPane;
 
     /**
      * Ugly JavaFX runtime issue fix...
@@ -376,8 +377,8 @@ public class MainController {
     private void renderWebView() {
         webView = new WebView();
         webView.setContextMenuEnabled(false);
-        webView.prefHeightProperty().bind(webPane.heightProperty());
-        webView.prefWidthProperty().bind(webPane.widthProperty());
+        //webView.prefHeightProperty().bind(webPane.heightProperty());
+        //webView.prefWidthProperty().bind(webPane.widthProperty());
 
         webPane.getChildren().add(webView);
 

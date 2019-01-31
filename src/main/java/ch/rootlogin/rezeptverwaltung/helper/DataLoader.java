@@ -16,7 +16,9 @@
 package ch.rootlogin.rezeptverwaltung.helper;
 
 import ch.rootlogin.rezeptverwaltung.model.Category;
+import ch.rootlogin.rezeptverwaltung.model.Receipt;
 import ch.rootlogin.rezeptverwaltung.repository.CategoryRepository;
+import ch.rootlogin.rezeptverwaltung.repository.ReceiptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -37,11 +39,8 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    final private List<Category> defaultCategories = Arrays.asList(
-            new Category("Pasta"),
-            new Category("Salate"),
-            new Category("Kuchen")
-    );
+    @Autowired
+    private ReceiptRepository receiptRepository;
 
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
@@ -54,7 +53,51 @@ public class DataLoader implements ApplicationListener<ApplicationReadyEvent> {
         final var categoryCount = categoryRepository.count();
         if(categoryCount == 0) {
             logger.info("Populating database...");
-            categoryRepository.saveAll(defaultCategories);
+
+            // Kuchen
+            var kuchen = new Category("Kuchen");
+            categoryRepository.save(kuchen);
+
+            var gleichschwer = new Receipt();
+            gleichschwer.setTitle("Gleichschwer");
+            gleichschwer.setContent(
+                    "**Zutaten**\n\n" +
+                    " * 250g Butter\n" +
+                    " * 250g Zucker\n" +
+                    " * 250g Mehl\n" +
+                    " * 1TL Backpulver\n" +
+                    " * 3 Eier\n\n" +
+                    "**Zubereitung**\n\n" +
+                    "Zuerst die Eier, den Zucker und die Butter verrühren. Danach das Mehl und Backpulver unterrühren.\n\n" +
+                    "Nach Belieben Früchte oder ähnliches beigeben.\n\n" +
+                    "**Backen**\n\n" +
+                    "30-45 Minuten bei 180°C Umluft."
+            );
+            gleichschwer.setCategory(kuchen);
+            receiptRepository.save(gleichschwer);
+
+            var marmorkuchen = new Receipt();
+            marmorkuchen.setTitle("Marmorkuchen");
+            marmorkuchen.setContent(
+                    "**Zutaten**\n\n" +
+                            " * 250g Butter\n" +
+                            " * 250g Zucker\n" +
+                            " * 1 Beutel Vanillezucker\n" +
+                            " * 2 TL Rum\n" +
+                            " * 4 Eier\n" +
+                            " * 500g Mehl\n" +
+                            " * 1 TL Backpulver\n" +
+                            " * 1 Prise Salz\n" +
+                            " * 1 dl Milch\n" +
+                            " * 30g Kakaopulver\n\n" +
+                            "**Zubereitung**\n\n" +
+                            "Zuerst die Eier, den Zucker und die Butter verrühren. Danach alle Zutaten, *ausser das Kakaopulver*, unterrühren.\n" +
+                            "Teig in 2 Teile teilen. Bei der einen Hälfte Kakaopulver unterühren. Danach in die Form füllen und mit einer Gabel durchziehen.\n\n" +
+                            "**Backen**\n\n" +
+                            "50 Minuten bei 160°C Umluft."
+            );
+            marmorkuchen.setCategory(kuchen);
+            receiptRepository.save(marmorkuchen);
         }
     }
 
